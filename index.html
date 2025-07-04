@@ -219,29 +219,59 @@
       }
     }
 
+    
     function showPractices(levelIndex, unitNumber) {
       hideAll();
-      const screenId = `practiceScreen${levelIndex}`;
-      const screen = document.getElementById(screenId) || document.createElement("div");
-      screen.className = "screen visible";
-      screen.id = screenId;
-      screen.innerHTML = `<div class="back-arrow" onclick="showUnits(${levelIndex})">⬅<span>Back to Units</span></div><h2>${levels[levelIndex].name} - Unit ${unitNumber} - Practice</h2>`;
-      const grid = document.createElement("div");
-      grid.className = "grid";
-      ["A", "B", "C", "D"].forEach(letter => {
-        const btn = document.createElement("div");
-        btn.className = "button";
-        btn.textContent = `Practice ${letter}`;
-        btn.onclick = () => {
-          alert(`👉 Replace with iframe: LEVEL ${levels[levelIndex].name}, UNIT ${unitNumber}, PRACTICE ${letter}`);
-        };
-        grid.appendChild(btn);
-      });
-      screen.appendChild(grid);
-      if (!document.getElementById(screenId)) {
+      const screenId = `practiceScreen${levelIndex}_${unitNumber}`;
+      let screen = document.getElementById(screenId);
+      if (!screen) {
+        screen = document.createElement("div");
+        screen.className = "screen visible";
+        screen.id = screenId;
+        screen.innerHTML = `<div class="back-arrow" onclick="showUnits(${levelIndex})">⬅<span>Back to Units</span></div><h2>${levels[levelIndex].name} - Unit ${unitNumber} - Practice</h2>`;
+        const grid = document.createElement("div");
+        grid.className = "grid";
+        ["A", "B", "C", "D"].forEach(letter => {
+          const btn = document.createElement("div");
+          btn.className = "button";
+          btn.textContent = `Practice ${letter}`;
+          btn.onclick = () => {
+            hideAll();
+            const iframeScreen = document.createElement("div");
+            iframeScreen.className = "screen visible";
+            let iframe = '';
+  
+            if (levelIndex === 0 && unitNumber === 1 && letter === 'A') {
+              iframe = `<iframe style="width:100%; max-width:800px; height:400px;" src="https://wordwall.net/embed/e392a6de68c94a2db56626abd1053279?themeId=62&templateId=3&fontStackId=0" frameborder="0" allowfullscreen></iframe>`;
+            }
+    
+            if (levelIndex === 0 && unitNumber === 2 && letter === 'A') {
+              iframe = `<iframe style="width:100%; max-width:800px; height:400px;" src="https://wordwall.net/embed/445557fcebb44ceea1af4168c739912f?themeId=46&templateId=46&fontStackId=0" frameborder="0" allowfullscreen></iframe>`;
+            }
+    
+            if (levelIndex === 0 && unitNumber === 3 && letter === 'A') {
+              iframe = `<iframe style="width:100%; max-width:800px; height:400px;" src="https://wordwall.net/embed/ca37350b3d634c38ad6d53f8c4f5ad05?themeId=54&templateId=5&fontStackId=0" frameborder="0" allowfullscreen></iframe>`;
+            }
+    
+            if (levelIndex === 0 && unitNumber === 4 && letter === 'A') {
+              iframe = `<iframe style="width:100%; max-width:800px; height:400px;" src="https://wordwall.net/embed/998b08e021ef4a3a97c5a5c2e3b5b0c5?themeId=58&templateId=78&fontStackId=0" frameborder="0" allowfullscreen></iframe>`;
+            }
+    
+            if (!iframe) {
+              iframe = `<p>🚧 This activity is not yet available.</p>`;
+            }
+            iframeScreen.innerHTML = `<div class="back-arrow" onclick="showPractices(${levelIndex}, ${unitNumber})">⬅<span>Back to Practice</span></div><h2>${levels[levelIndex].name} - Unit ${unitNumber} - Practice ${letter}</h2>` + iframe;
+            document.body.appendChild(iframeScreen);
+          };
+          grid.appendChild(btn);
+        });
+        screen.appendChild(grid);
         document.getElementById("practiceScreens").appendChild(screen);
+      } else {
+        screen.classList.add("visible");
       }
     }
+
 
     function goHome() {
       hideAll();
