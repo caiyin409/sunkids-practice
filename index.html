@@ -94,10 +94,37 @@
       margin: 1rem;
       letter-spacing: 8px;
     }
-  </style>
+  
+    .number {
+      background-color: #b3d9ff;
+      border: 2px solid #3399ff;
+    }
+    .special {
+      background-color: #ffb3d9;
+      border: 2px solid #ff66a3;
+    }
+    .enter-btn {
+      background-color: #ffb3d9;
+      border: 2px solid #ff66a3;
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+      margin-top: 1rem;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+</style>
 </head>
 <body>
-  <div class="screen visible" id="levelScreen">
+  
+  <div class="screen visible" id="loginScreen">
+    <h1>🔒 Welcome to Sunkids Practice</h1>
+    <p>Please enter password to begin:</p>
+    <div class="password-display" id="mainPasswordDisplay">____</div>
+    <div class="num-pad" id="mainNumPad"></div>
+    <button class="enter-btn" onclick="submitMainPassword()">Enter</button>
+  </div>
+
+  <div class="screen" id="levelScreen">
     <h1>🎮 Welcome to Sunkids Online Practice</h1>
     <p>Select your book level:</p>
     <div class="grid" id="levelButtons"></div>
@@ -281,6 +308,47 @@
     }
 
     buildLevels();
+
+    let mainTypedPassword = "";
+    function buildMainNumPad() {
+      const pad = document.getElementById("mainNumPad");
+      for (let i = 1; i <= 9; i++) pad.appendChild(mainNumBtn(i));
+      pad.appendChild(mainNumBtn("←", true));
+      pad.appendChild(mainNumBtn("0"));
+      pad.appendChild(mainNumBtn("C", true));
+    }
+
+    function mainNumBtn(label, special = false) {
+      const btn = document.createElement("button");
+      btn.textContent = label;
+      btn.className = special ? "special" : "number";
+      btn.onclick = () => handleMainInput(label);
+      return btn;
+    }
+
+    function handleMainInput(val) {
+      if (val === "C") mainTypedPassword = "";
+      else if (val === "←") mainTypedPassword = mainTypedPassword.slice(0, -1);
+      else if (mainTypedPassword.length < 4) mainTypedPassword += val;
+      updateMainDisplay();
+    }
+
+    function updateMainDisplay() {
+      const d = document.getElementById("mainPasswordDisplay");
+      d.textContent = (mainTypedPassword + "____").slice(0, 4).replace(/./g, c => c === "_" ? "_" : "●");
+    }
+
+    function submitMainPassword() {
+      if (mainTypedPassword === "0000") {
+        document.getElementById("loginScreen").classList.remove("visible");
+        document.getElementById("levelScreen").classList.add("visible");
+      } else {
+        alert("Wrong password!");
+      }
+    }
+
+    buildMainNumPad();
+
     buildNumPad();
   </script>
 </body>
