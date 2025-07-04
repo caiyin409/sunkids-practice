@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sunkids Online Practice</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://cdn.pixabay.com/photo/2016/04/01/09/13/cartoon-1299394_1280.png') repeat;
+      background-color: #fff9f0;
+      color: #333;
+    }
+    .screen {
+      display: none;
+      padding: 2rem;
+      text-align: center;
+    }
+    .visible {
+      display: block;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      padding: 1rem;
+      justify-items: center;
+    }
+    .button {
+      border: 3px solid #333;
+      border-radius: 16px;
+      padding: 2rem;
+      width: 160px;
+      height: 120px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 2px 2px 6px #ccc;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      animation: pop 1s ease-in-out;
+    }
+    .button:hover {
+      transform: scale(1.08);
+      box-shadow: 4px 4px 12px #aaa;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .begin1 { background: #c8facc; border-color: #91e69a; }
+    .begin2 { background: #8fffa6; border-color: #56e874; }
+    .go1 { background: #ffb3b3; border-color: #ff6b6b; }
+    .go2 { background: #fff799; border-color: #ffd43b; }
+    .go3 { background: #b3e0ff; border-color: #3399ff; }
+    .go4 { background: #d0f5b1; border-color: #98e37f; }
+    .go5 { background: #ffd1a4; border-color: #ffa94d; }
+    .go6 { background: #e2c6ff; border-color: #b980ff; }
+  </style>
+</head>
+<body>
+  <div class="screen visible" id="levelScreen">
+    <h1>🎮 Welcome to Sunkids Online Practice</h1>
+    <p>Select your book level:</p>
+    <div class="grid">
+      <div class="button begin1" onclick="enterLevel(0)">Let's Begin 1</div>
+      <div class="button begin2" onclick="enterLevel(1)">Let's Begin 2</div>
+      <div class="button go1" onclick="enterLevel(2)">Let's Go 1</div>
+      <div class="button go2" onclick="enterLevel(3)">Let's Go 2</div>
+      <div class="button go3" onclick="enterLevel(4)">Let's Go 3</div>
+      <div class="button go4" onclick="enterLevel(5)">Let's Go 4</div>
+      <div class="button go5" onclick="enterLevel(6)">Let's Go 5</div>
+      <div class="button go6" onclick="enterLevel(7)">Let's Go 6</div>
+    </div>
+  </div>
+
+  <div id="unitScreens"></div>
+  <div id="practiceScreens"></div>
+
+  <script>
+    const levels = [
+      { name: "Let's Begin 1", password: "0123", units: 28 },
+      { name: "Let's Begin 2", password: "9040", units: 8 },
+      { name: "Let's Go 1", password: "0601", units: 8 },
+      { name: "Let's Go 2", password: "0725", units: 8 },
+      { name: "Let's Go 3", password: "1210", units: 8 },
+      { name: "Let's Go 4", password: "0823", units: 8 },
+      { name: "Let's Go 5", password: "8764", units: 8 },
+      { name: "Let's Go 6", password: "5613", units: 8 },
+    ];
+
+    function hideAll() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+    }
+
+    function enterLevel(index) {
+      const pw = prompt(`Enter password for ${levels[index].name}`);
+      if (pw === levels[index].password) {
+        showUnits(index);
+      } else {
+        alert("Wrong password!");
+      }
+    }
+
+    function showUnits(index) {
+      hideAll();
+      const screenId = `unitScreen${index}`;
+      if (!document.getElementById(screenId)) {
+        const screen = document.createElement("div");
+        screen.className = "screen visible";
+        screen.id = screenId;
+        const title = document.createElement("h2");
+        title.textContent = `${levels[index].name} - Select a Unit`;
+        const grid = document.createElement("div");
+        grid.className = "grid";
+        for (let i = 1; i <= levels[index].units; i++) {
+          const btn = document.createElement("div");
+          btn.className = "button";
+          btn.textContent = `Unit ${i}`;
+          btn.onclick = () => showPractices(index, i);
+          grid.appendChild(btn);
+        }
+        const back = document.createElement("div");
+        back.className = "button";
+        back.textContent = "🔙 Back";
+        back.onclick = () => goHome();
+        screen.appendChild(title);
+        screen.appendChild(grid);
+        screen.appendChild(back);
+        document.getElementById("unitScreens").appendChild(screen);
+      } else {
+        document.getElementById(screenId).classList.add("visible");
+      }
+    }
+
+    function showPractices(levelIndex, unitNumber) {
+      hideAll();
+      const screenId = `practiceScreen${levelIndex}`;
+      const gridId = `practiceGrid${levelIndex}`;
+      if (!document.getElementById(screenId)) {
+        const screen = document.createElement("div");
+        screen.className = "screen visible";
+        screen.id = screenId;
+        const title = document.createElement("h2");
+        title.textContent = `${levels[levelIndex].name} - Unit ${unitNumber} - Practice`;
+        const grid = document.createElement("div");
+        grid.className = "grid";
+        grid.id = gridId;
+        ["A", "B", "C", "D"].forEach(letter => {
+          const btn = document.createElement("div");
+          btn.className = "button";
+          btn.textContent = `Practice ${letter}`;
+          btn.onclick = () => {
+            alert(`👉 Replace with iframe: LEVEL ${levels[levelIndex].name}, UNIT ${unitNumber}, PRACTICE ${letter}`);
+          };
+          grid.appendChild(btn);
+        });
+        const back = document.createElement("div");
+        back.className = "button";
+        back.textContent = "🔙 Back to Units";
+        back.onclick = () => showUnits(levelIndex);
+        screen.appendChild(title);
+        screen.appendChild(grid);
+        screen.appendChild(back);
+        document.getElementById("practiceScreens").appendChild(screen);
+      } else {
+        const title = document.querySelector(`#${screenId} h2`);
+        title.textContent = `${levels[levelIndex].name} - Unit ${unitNumber} - Practice`;
+        document.getElementById(screenId).classList.add("visible");
+      }
+    }
+
+    function goHome() {
+      hideAll();
+      document.getElementById("levelScreen").classList.add("visible");
+    }
+  </script>
+</body>
+</html>
